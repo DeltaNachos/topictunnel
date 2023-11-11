@@ -7,5 +7,12 @@
     "action": {
         "default_popup": "index.html",
         "default_title": "Topic Tunnel"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": false
     }
 }
