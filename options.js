@@ -1,14 +1,14 @@
 // Saves options to chrome.storage
 const saveOptions = () => {
-    const workTime = document.getElementById('timeon').value;
-    const breakTime = document.getElementById('timeoff').value;
+    var workTime = document.getElementById('work').value;
+    var breakTime = document.getElementById('break').value;
   
     chrome.storage.sync.set(
       { pomodoroWork: workTime, pomodoroBreak: breakTime },
       () => {
         // Update status to let user know options were saved.
-        const status = document.getElementById('status');
-        status.textContent = 'Options saved.';
+        var status = document.getElementById('status');
+        status.innerText = 'Options saved.';
         setTimeout(() => {
           status.textContent = '';
         }, 750);
@@ -22,8 +22,8 @@ const saveOptions = () => {
     chrome.storage.sync.get(
       { pomodoroWork: '25', pomodoroBreak: '5' },
       (items) => {
-        document.getElementById('timeon').value = items.pomodoroWork;
-        document.getElementById('timeoff').checked = items.pomodoroBreak;
+        document.getElementById('work').value = items.pomodoroWork;
+        document.getElementById('break').checked = items.pomodoroBreak;
       }
     );
   };

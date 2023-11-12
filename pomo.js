@@ -1,18 +1,4 @@
-const startBtn = document.getElementById('startBtn');
-const stopBtn = document.getElementById('stopBtn');
-const timerForm = document.getElementById('timerForm');
-
-// Save settings on submit
-timerForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const workDuration = parseInt(document.getElementById('work').value);
-  const breakDuration = parseInt(document.getElementById('break').value);
-  
-  await chrome.storage.local.set({
-    pomodoroWork: workDuration * 60, // Convert minutes to seconds
-    pomodoroBreak: breakDuration * 60, // Convert minutes to seconds
-  });
-});
+const startBtn = document.getElementById('start-button');
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -26,8 +12,4 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Send message to background script to start/stop timer
 startBtn.addEventListener('click', () => {
   chrome.runtime.sendMessage('startTimer');
-});
-
-stopBtn.addEventListener('click', () => {
-  chrome.runtime.sendMessage('stopTimer');
 });
