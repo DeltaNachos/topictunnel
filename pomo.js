@@ -7,9 +7,9 @@ function updateTimerDisplay(minutes, seconds) {
 
 // Listen for messages from background script
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request === 'tick') {
+  timerDisplay.textContent('4');
+  if (request === "tick") {
     // updateTimerDisplay(minutes, seconds);
-    timerDisplay.textContent('4');
   } else if (request === 'done') {
     timerDisplay.textContent('Time up! Take a break.');
   }

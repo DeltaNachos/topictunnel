@@ -24,13 +24,13 @@ function tick() {
     clearInterval(timerInterval);
     chrome.tabs.query({}, (tabs) => { // gets every tab
       tabs.forEach((tab) => {
-        chrome.runtime.sendMessage({ message: "done" }); // timer is done
+        chrome.tabs.sendMessage(tab.id, { message: "done" }); // timer is done
       });
     });
   } else {
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
-        chrome.runtime.sendMessage({ message: "tick" }); // timer counts down 1
+        chrome.tabs.sendMessage(tab.id, { message: "tick" }); // timer counts down 1
       });
     });
   }
@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener((message) => {
   if (message == 'startTimer') { // trigger to start
     if (!isRunning) {
         isRunning = true; // timer starts
-        timerInterval = setInterval(tick, 1000); // define tick as 1 second
+        timerInterval = setInterval(tick(), 1000); // define tick as 1 second
     }
   }
 });
