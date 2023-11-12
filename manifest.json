@@ -4,11 +4,12 @@
     "manifest_version": 3,
 
     "action": {
-        "default_popup": "index.html",
         "default_title": "Topic Tunnel"
     },
     "description": "Adaptive whitelisting extension to reclaim control over your online work environment!",
     "icons": {
+        "16": "icons/tt_ico16.png",
+        "48": "icons/tt_ico48.png",
         "128": "icons/tt_ico128.png"
     },
 
@@ -16,8 +17,11 @@
     "permissions": [
         "storage",
         "tabs",
-        "activeTab",
-        "scripting"
+        "scripting",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "<all_urls>"
     ],
     "options_ui": {
         "page": "options.html",
