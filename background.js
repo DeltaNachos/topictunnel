@@ -28,6 +28,7 @@ function tick() {
 var activeTabTitle;
 var lastTabTitle;
 var lastUrl;
+let gptResponse;
 
 // Function to get the title of the active tab
 function getActiveTabTitle() {
@@ -61,8 +62,8 @@ function getActiveTabTitle() {
 
   // Event listener for tab activation changes
   chrome.tabs.onActivated.addListener(function(activeInfo) {
-    chrome.tabs.reload();
-    // getActiveTabTitle();
+    // chrome.tabs.reload();
+    getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   });
 
@@ -86,15 +87,17 @@ function fetcher() {
     }
   })
     .then(output => output.text())
-    .then((output) => {
-      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        console.log(message.message);
-        if (message.message === 'good?') {
-          sendResponse( { message: output } );
-        }
-      })
-      console.log(output)
-      console.log(activeTabTitle)
-    })
-    .catch(err => console.log(err));
+    .then((output) => {        
+        gptResponse = output
+        console.log(output)
+        console.log(activeTabTitle)
+      }
+    )
+    .catch(err => console.log(err))
 }
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message === "contentLoad") {
+    sendResponse({message: gptResponse});
+  }
+});
