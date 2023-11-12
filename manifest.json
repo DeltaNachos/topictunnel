@@ -35,5 +35,10 @@
         "matches": ["<all_urls>"],
         "js": ["contentRemove.js"]
     }],
-    "web_accessible_resources": ["nuh-uh-nuh.gif"]
+    "web_accessible_resources": [
+        {
+            "resources": ["nuh-uh-nuh.gif"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }
