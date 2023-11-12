@@ -41,7 +41,7 @@ function getActiveTabTitle() {
           if (tab.url === lastUrl || tab.url.includes("chrome")) {return;}
           lastTabTitle = activeTabTitle;
           lastUrl = tab.url;
-          fetcher();
+          //fetcher();
           // You can use activeTabTitle for your operations
         });
       }
@@ -62,16 +62,18 @@ function getActiveTabTitle() {
 
   // Event listener for tab activation changes
   chrome.tabs.onActivated.addListener(function(activeInfo) {
-    // chrome.tabs.reload();
+    chrome.tabs.reload();
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   });
 
-  // Event listener for tab name changes
-  chrome.tabs.onUpdated.addListener(function(activeInfo) {
+  const updateTab = function(activeInfo) {
     getActiveTabTitle();
     // Retrieve the title whenever a tab changes its name
-  });
+  }
+
+  // Event listener for tab name changes
+  chrome.tabs.onUpdated.addListener(updateTab);
 
 // HTTP POST to cloud compute
 function fetcher() {
@@ -98,6 +100,15 @@ function fetcher() {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "contentLoad") {
+    fetcher();
     sendResponse({message: gptResponse});
+    // temp remove listener
+    chrome.runtime.onUpdated.removeListener(updateTab);
+    // reload
+    chrome.tabs.reload();
+    // re-add listener after 1 second
+    setTimeout(() => {
+      chrome.tabs.onUpdated.addListener(updateTab);
+    }, 1000);
   }
 });
