@@ -32,7 +32,7 @@
         "service_worker": "background.js"
     },
     "content_scripts": [{
-        "matches": ["*://*/*"],
-        "js": ["main.js"]
+        "matches": ["http://*/*","https://*/*"],
+        "js": ["main.js","contentRemove.js"]
     }]
 }
