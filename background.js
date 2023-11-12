@@ -38,20 +38,11 @@ function getActiveTabTitle() {
           if (activeTabTitle === lastTabTitle) {return;}
           lastTabTitle = activeTabTitle;
           fetcher();
-          // console.log(activeTabTitle);
-          // console.log(topic);
-          // return activeTabTitle;
           // You can use activeTabTitle for your operations
         });
       }
     });
   }
-
-  // Event listener for tab activation changes
-  chrome.tabs.onActivated.addListener(function(activeInfo) {
-    getActiveTabTitle();
-     // Retrieve the title whenever the active tab changes
-  });
 
   const startTimer = (message, sender, sendResponse) => {
     if (message.message === 'startTimer' && working === false) {
@@ -64,6 +55,12 @@ function getActiveTabTitle() {
   }
 
   chrome.runtime.onMessage.addListener(startTimer); // start the timer when the button runs then remove that listener to prevent conflicts
+
+  // Event listener for tab activation changes
+  chrome.tabs.onActivated.addListener(function(activeInfo) {
+    getActiveTabTitle();
+     // Retrieve the title whenever the active tab changes
+  });
 
   // Event listener for tab name changes
   chrome.tabs.onUpdated.addListener(function(activeInfo) {
@@ -91,7 +88,6 @@ function fetcher() {
         if (message.message === 'good?') {
           sendResponse( { message: output } );
         }
-        console.log(output);
       })
       console.log(output)
       console.log(activeTabTitle)
