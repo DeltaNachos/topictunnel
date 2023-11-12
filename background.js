@@ -50,8 +50,6 @@ function getActiveTabTitle() {
   });
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log(message.message);
-    console.log(message.topic);
     topic = message.topic;
     if (message.message == 'startTimer' && working == false) {
         topic = message.topic;
