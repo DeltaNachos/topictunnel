@@ -1,3 +1,29 @@
+// start the pomodoro timer
+let workingTimer;
+let breakTimer;
+let timeInterval;
+let working = false;
+let topic;
+
+async function init() {
+    const [workTime, breakTime] = await Promise.all([
+        chrome.storage.local.get(['pomodoroWork']),
+        chrome.storage.local.get(['pomodoroBreak'])
+    ]);
+
+    workingTimer = workTime.pomodoroWork || 1500;
+    breakTimer = breakTime.pomodoroBreak || 300;
+}
+
+function tick() {
+    workingTimer -= 1;
+    if (workingTimer <= 0) {
+        clearInterval(timeInterval);
+    } else {
+        // send message to content script
+    }
+}
+
 // get tab title on change
 var activeTabTitle;
 var lastTabTitle;
@@ -25,6 +51,16 @@ function getActiveTabTitle() {
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   });
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    topic = message.topic;
+    if (message.message == 'startTimer' && working == false) {
+        topic = message.topic;
+        working = true;
+        timeInterval = setInterval(tick, 1000);
+        sendResponse( { message : 'timerStarted' } )
+    }
+  }) // start the timer when the button runs
 
   // Event listener for tab name changes
   chrome.tabs.onUpdated.addListener(function(activeInfo) {
