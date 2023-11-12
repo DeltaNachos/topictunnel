@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <script src="pomo.js"></script>
     
     <title>Topic Tunnel</title>
     <style>
@@ -87,6 +88,17 @@
         <div>
             Testing column alignment
         </div>
+        <form id="timerForm">
+          <label for="work">Work Duration (minutes):</label>
+          <input type="number" name="work" id="work" required min="1" step="1"/>
+          <br/>
+          <label for="break">Break Duration (minutes):</label>
+          <input type="number" name="break" id="break" required min="1" step="1"/>
+          <br/>
+          <button id="startBtn">Start</button>
+          <button id="stopBtn">Stop</button>
+        </form>
+        <script src="main.js"></script>
     </main>
     <script src="js/bootstrap.bundle.min.js"></script>
 </body>
