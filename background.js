@@ -24,13 +24,13 @@ function tick() {
     clearInterval(timerInterval);
     chrome.tabs.query({}, (tabs) => { // gets every tab
       tabs.forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, 'done'); // timer is done
+        chrome.runtime.sendMessage({ message: "done" }); // timer is done
       });
     });
   } else {
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach((tab) => {
-        chrome.tabs.sendMessage(tab.id, 'tick'); // timer counts down 1
+        chrome.runtime.sendMessage({ message: "tick" }); // timer counts down 1
       });
     });
   }
