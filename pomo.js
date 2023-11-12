@@ -43,7 +43,7 @@ start.addEventListener('click', () => {
 end.addEventListener('click', () => {
   chrome.runtime.sendMessage( { message: "kill"} );
   start.removeAttribute('disabled');
-  end.setAttribute('disabled',true);
+  end.removeAttribute('disabled', true);
   save();
 })
 

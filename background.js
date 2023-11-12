@@ -31,42 +31,44 @@ function getActiveTabTitle() {
     });
   }
 
-  // start the timer when the button runs then remove that listener to prevent conflicts
-  chrome.runtime.onMessage.addListener(startTimer);
-
   const startTimer = (message, sender, sendResponse) => {
-    if (message.message === 'startTimer' && working === false) {
+    if (message.message === 'startTimer') {
       topic = message.topic;
       working = true;
+      kill = false;
       sendResponse( { message : 'timerStarted' } )
-      chrome.runtime.onMessage.removeListener(startTimer);
-    } else if (message.message === 'kill' && working === true) {
+    }
+  }
+
+  const killTimer = (message, sender, sendResponse) => {
+    if (message.message === 'kill') {
+      console.log("kill")
       kill = true;
     }
   }
 
-  // Event listener for tab activation changes
-  chrome.tabs.onActivated.addListener(changeTab);
+  // start the timer when the button runs then remove that listener to prevent conflicts
+  chrome.runtime.onMessage.addListener(startTimer);
+  chrome.runtime.onMessage.addListener(killTimer);
 
   const changeTab = function(activeInfo) {
-    if (kill) {
-      return;
-    }
+    if (kill === true) {return;}
     chrome.tabs.reload();
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   }
 
-  // Event listener for tab name changes
-  chrome.tabs.onUpdated.addListener(updateTab);
+  // Event listener for tab activation changes
+  chrome.tabs.onActivated.addListener(changeTab);
 
   const updateTab = function(activeInfo) {
-    if (kill) {
-      return;
-    }
+    if (kill === true) {return;}
     getActiveTabTitle();
     // Retrieve the title whenever a tab changes its name
   }
+
+  // Event listener for tab name changes
+  chrome.tabs.onUpdated.addListener(updateTab);
 
 // HTTP POST to cloud compute
 function fetcher() {
@@ -96,9 +98,7 @@ function fetcher() {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (kill) {
-    return;
-  }
+  if (kill === true) {return;}
   if (request.message === "contentLoad") {
     fetcher();
     sendResponse({message: gptResponse});
