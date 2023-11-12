@@ -34,14 +34,18 @@ const save = () => {
 start.addEventListener('click', () => {
   var topic = document.getElementById('researchTopic').value;
   console.log(topic);
-  chrome.runtime.sendMessage( { message: "startTimer", topic: topic } );
+  var port = chrome.runtime.connect({name:"start"});
+  port.postMessage({message:"startTimer", topic:topic});
+  // chrome.runtime.sendMessage( { message: "startTimer", topic: topic } );
   start.setAttribute('disabled',true);
   end.removeAttribute('disabled');
   save();
 })
 
 end.addEventListener('click', () => {
-  chrome.runtime.sendMessage( { message: "kill"} );
+  var port = chrome.runtime.connect({name:"start"});
+  port.postMessage({message:"kill"});
+  // chrome.runtime.sendMessage( { message: "kill"} );
   start.removeAttribute('disabled');
   end.setAttribute('disabled',true);
   save();

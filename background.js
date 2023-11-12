@@ -32,19 +32,26 @@ function getActiveTabTitle() {
   }
 
 
-  const startTimer = (message, sender, sendResponse) => {
-    if (message.message === 'startTimer' && working === false) {
-      topic = message.topic;
-      working = true;
-      sendResponse( { message : 'timerStarted' } )
-      chrome.runtime.onMessage.removeListener(startTimer);
-    } else if (message.message === 'kill' && working === true) {
-      kill = true;
-    }
+  const startTimer = (port) => {
+    console.assert(port.name === "start");
+    port.onMessage.addListener((message) => {
+      if (message.message === 'startTimer' && working === false) {
+        kill = false;
+        topic = message.topic;
+        working = true;
+      } else if (message.message === 'kill') {
+        kill = true;
+      }
+    })
+    // if (message.message === 'startTimer' && working === false) {
+    //   topic = message.topic;
+    //   working = true;
+    //   sendResponse( { message : 'timerStarted' } )
+    //   chrome.runtime.onMessage.removeListener(startTimer);
   }
 
   // start the timer when the button runs then remove that listener to prevent conflicts
-  chrome.runtime.onMessage.addListener(startTimer);
+  chrome.runtime.onConnect.addListener(startTimer);
 
   const changeTab = function(activeInfo) {
     if (kill) {
