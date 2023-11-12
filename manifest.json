@@ -7,15 +7,23 @@
         "default_popup": "index.html",
         "default_title": "Topic Tunnel"
     },
+    "description": "Adaptive whitelisting extension to reclaim control over your online work environment!",
+    "icons": {
+        "128": "icons/tt_ico128.png"
+    },
+
+    "author": "Aidan Gatenbee, Erek Gilbertson, Sam Katerov",
     "permissions": [
-        "storage"
+        "storage",
+        "tabs",
+        "activeTab",
+        "scripting"
     ],
     "options_ui": {
         "page": "options.html",
         "open_in_tab": false 
     },
-    "background" :{
-        "service_worker" : "background.js"
-    },
-    "manifest_version": 3
+    "background": {
+        "service_worker": "background.js"
+    }
 }
