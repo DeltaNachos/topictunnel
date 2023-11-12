@@ -37,8 +37,8 @@ start.addEventListener('click', () => {
   chrome.runtime.sendMessage( { message: "startTimer", topic: topic }, (response) => {
     console.log(response.message);
   } );
-  start.setAttribute('disabled',true);
-  end.setAttribute('disabled',false);
+  start.setAttribute('disabled','');
+  end.removeAttribute('disabled');
   save;
 })
 
@@ -46,8 +46,8 @@ end.addEventListener('click', () => {
   chrome.runtime.sendMessage( { message: "kill"}, (response) => {
     console.log(response.message);
   } );
-  start.setAttribute('disabled',false);
-  end.setAttribute('disabled',true);
+  start.removeAttribute('disabled');
+  end.setAttribute('disabled','');
 })
 
 document.addEventListener('DOMContentLoaded', load);
