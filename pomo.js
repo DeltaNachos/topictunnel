@@ -1,21 +1,5 @@
-const startBtn = document.getElementById('start-button');
-const timerDisplay = document.getElementById('timerDisplay');
+const start = document.getElementById('start-button');
 
-function updateTimerDisplay(minutes, seconds) {
-  timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-// Listen for messages from background script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  timerDisplay.textContent('4');
-  if (request === "tick") {
-    // updateTimerDisplay(minutes, seconds);
-  } else if (request === 'done') {
-    timerDisplay.textContent('Time up! Take a break.');
-  }
-});
-
-// Send message to background script to start/stop timer
-startBtn.addEventListener('click', () => {
-  chrome.runtime.sendMessage({ message: 'startTimer' });
-});
+start.addEventListener('click', () => {
+  chrome.runtime.sendMessage( { message: "startTimer" } )
+})
