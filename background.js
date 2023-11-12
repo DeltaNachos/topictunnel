@@ -27,6 +27,7 @@ function tick() {
 // get tab title on change
 var activeTabTitle;
 var lastTabTitle;
+var lastUrl;
 
 // Function to get the title of the active tab
 function getActiveTabTitle() {
@@ -35,33 +36,35 @@ function getActiveTabTitle() {
         const activeTabId = tabs[0].id;
         chrome.tabs.get(activeTabId, function(tab) {
           activeTabTitle = tab.title;
-          if (activeTabTitle == lastTabTitle) {return;}
+          if (activeTabTitle === lastTabTitle) {return;}
+          if (tab.url === lastUrl || tab.url.includes("chrome")) {return;}
           lastTabTitle = activeTabTitle;
+          lastUrl = tab.url;
           fetcher();
-          //console.log(activeTabTitle);
-          //console.log(topic);
-          //return activeTabTitle;
           // You can use activeTabTitle for your operations
         });
       }
     });
   }
 
+  const startTimer = (message, sender, sendResponse) => {
+    if (message.message === 'startTimer' && working === false) {
+      topic = message.topic;
+      working = true;
+      timeInterval = setInterval(tick, 1000);
+      sendResponse( { message : 'timerStarted' } )
+      chrome.runtime.onMessage.removeListener(startTimer);
+    }
+  }
+
+  chrome.runtime.onMessage.addListener(startTimer); // start the timer when the button runs then remove that listener to prevent conflicts
+
   // Event listener for tab activation changes
   chrome.tabs.onActivated.addListener(function(activeInfo) {
-    getActiveTabTitle();
+    chrome.tabs.reload();
+    // getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   });
-
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    topic = message.topic;
-    if (message.message == 'startTimer' && working == false) {
-        topic = message.topic;
-        working = true;
-        timeInterval = setInterval(tick, 1000);
-        sendResponse( { message : 'timerStarted' } )
-    }
-  }) // start the timer when the button runs
 
   // Event listener for tab name changes
   chrome.tabs.onUpdated.addListener(function(activeInfo) {
@@ -84,6 +87,12 @@ function fetcher() {
   })
     .then(output => output.text())
     .then((output) => {
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        console.log(message.message);
+        if (message.message === 'good?') {
+          sendResponse( { message: output } );
+        }
+      })
       console.log(output)
       console.log(activeTabTitle)
     })
