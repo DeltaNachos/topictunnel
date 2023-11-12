@@ -27,6 +27,7 @@ function tick() {
 // get tab title on change
 var activeTabTitle;
 var lastTabTitle;
+var lastUrl;
 
 // Function to get the title of the active tab
 function getActiveTabTitle() {
@@ -36,7 +37,9 @@ function getActiveTabTitle() {
         chrome.tabs.get(activeTabId, function(tab) {
           activeTabTitle = tab.title;
           if (activeTabTitle === lastTabTitle) {return;}
+          if (tab.url === lastUrl || tab.url.includes("chrome")) {return;}
           lastTabTitle = activeTabTitle;
+          lastUrl = tab.url;
           fetcher();
           // You can use activeTabTitle for your operations
         });
@@ -58,7 +61,8 @@ function getActiveTabTitle() {
 
   // Event listener for tab activation changes
   chrome.tabs.onActivated.addListener(function(activeInfo) {
-    getActiveTabTitle();
+    chrome.tabs.reload();
+    // getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   });
 
