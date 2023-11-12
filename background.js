@@ -86,7 +86,6 @@ function fetcher() {
   })
     .then(output => output.text())
     .then((output) => {
-      //chrome.runtime.onMessage.removeListener(startTimer);
       chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log(message.message);
         if (message.message === 'good?') {

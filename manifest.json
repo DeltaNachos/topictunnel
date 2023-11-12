@@ -34,5 +34,6 @@
     "content_scripts": [{
         "matches": ["<all_urls>"],
         "js": ["contentRemove.js"]
-    }]
+    }],
+    "web_accessible_resources": ["nuh-uh-nuh.gif"]
 }
