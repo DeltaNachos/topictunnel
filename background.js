@@ -55,6 +55,9 @@ function getActiveTabTitle() {
       timeInterval = setInterval(tick, 1000);
       sendResponse( { message : 'timerStarted' } )
       chrome.runtime.onMessage.removeListener(startTimer);
+    } else if (message.message === 'kill' && working === true) {
+      chrome.tabs.onActived.removeListener(changeTab);
+      chrome.tabs.onUpdated.removeListener(updateTab);
     }
   }
 
@@ -105,7 +108,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     fetcher();
     sendResponse({message: gptResponse});
     // temp remove listener
-    chrome.runtime.onUpdated.removeListener(updateTab);
+    // chrome.runtime.onUpdated.removeListener(updateTab);
     // reload
     chrome.tabs.reload();
     // re-add listener after 1 second
