@@ -1,28 +1,9 @@
 // start the pomodoro timer
 let workingTimer;
 let breakTimer;
-let timeInterval;
 let working = false;
 let topic;
-
-async function init() {
-    const [workTime, breakTime] = await Promise.all([
-        chrome.storage.local.get(['pomodoroWork']),
-        chrome.storage.local.get(['pomodoroBreak'])
-    ]);
-
-    workingTimer = workTime.pomodoroWork || 1500;
-    breakTimer = breakTime.pomodoroBreak || 300;
-}
-
-function tick() {
-    workingTimer -= 1;
-    if (workingTimer <= 0) {
-        clearInterval(timeInterval);
-    } else {
-        // send message to content script
-    }
-}
+let kill = false;
 
 // get tab title on change
 var activeTabTitle;
@@ -57,9 +38,10 @@ function getActiveTabTitle() {
     if (message.message === 'startTimer' && working === false) {
       topic = message.topic;
       working = true;
-      timeInterval = setInterval(tick, 1000);
       sendResponse( { message : 'timerStarted' } )
       chrome.runtime.onMessage.removeListener(startTimer);
+    } else if (message.message === 'kill' && working === true) {
+      kill = true;
     }
   }
 
@@ -67,6 +49,9 @@ function getActiveTabTitle() {
   chrome.tabs.onActivated.addListener(changeTab);
 
   const changeTab = function(activeInfo) {
+    if (kill) {
+      return;
+    }
     chrome.tabs.reload();
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
@@ -76,6 +61,9 @@ function getActiveTabTitle() {
   chrome.tabs.onUpdated.addListener(updateTab);
 
   const updateTab = function(activeInfo) {
+    if (kill) {
+      return;
+    }
     getActiveTabTitle();
     // Retrieve the title whenever a tab changes its name
   }
@@ -108,6 +96,9 @@ function fetcher() {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (kill) {
+    return;
+  }
   if (request.message === "contentLoad") {
     fetcher();
     sendResponse({message: gptResponse});
