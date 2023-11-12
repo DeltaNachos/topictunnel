@@ -35,7 +35,7 @@ function getActiveTabTitle() {
         const activeTabId = tabs[0].id;
         chrome.tabs.get(activeTabId, function(tab) {
           activeTabTitle = tab.title;
-          if (activeTabTitle == lastTabTitle) {return;}
+          if (activeTabTitle === lastTabTitle) {return;}
           lastTabTitle = activeTabTitle;
           fetcher();
           // console.log(activeTabTitle);
@@ -53,15 +53,16 @@ function getActiveTabTitle() {
      // Retrieve the title whenever the active tab changes
   });
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    topic = message.topic;
-    if (message.message == 'startTimer' && working == false) {
-        topic = message.topic;
-        working = true;
-        timeInterval = setInterval(tick, 1000);
-        sendResponse( { message : 'timerStarted' } )
+  const startTimer = (message, sender, sendResponse) => {
+    if (message.message === 'startTimer' && working === false) {
+      topic = message.topic;
+      working = true;
+      timeInterval = setInterval(tick, 1000);
+      sendResponse( { message : 'timerStarted' } )
     }
-  }) // start the timer when the button runs
+  }
+
+  chrome.runtime.onMessage.addListener(startTimer); // start the timer when the button runs then remove that listener to prevent conflicts
 
   // Event listener for tab name changes
   chrome.tabs.onUpdated.addListener(function(activeInfo) {
@@ -71,10 +72,11 @@ function getActiveTabTitle() {
 
 // HTTP POST to cloud compute
 function fetcher() {
+  if (topic === undefined || topic === "" || activeTabTitle === undefined || activeTabTitle === "") {return;}
   fetch("https://us-central1-topictunnel.cloudfunctions.net/http-test", {
     method: "POST",
     body: JSON.stringify({
-      "prompt": "fortnite",
+      "prompt": topic,
       "text": activeTabTitle
     }),
     headers: {
@@ -83,9 +85,11 @@ function fetcher() {
   })
     .then(output => output.text())
     .then((output) => {
+      chrome.runtime.onMessage.removeListener(startTimer);
       chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        if (message.message == 'good?') {
-          sendResponse( { message : "NO" });
+        console.log(message.message);
+        if (message.message === 'good?') {
+          sendResponse( { message: output } );
         }
       })
       console.log(output)

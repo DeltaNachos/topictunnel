@@ -1,3 +1,4 @@
+console.log('content script');
 chrome.runtime.sendMessage({message: "good?"}, (response) => {
     if(response.message === "NO"){
     console.log("nuh uh");
