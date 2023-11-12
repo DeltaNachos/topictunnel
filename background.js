@@ -60,12 +60,14 @@ function getActiveTabTitle() {
 
   chrome.runtime.onMessage.addListener(startTimer); // start the timer when the button runs then remove that listener to prevent conflicts
 
-  // Event listener for tab activation changes
-  chrome.tabs.onActivated.addListener(function(activeInfo) {
+  const changeTab = function(activeInfo) {
     chrome.tabs.reload();
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
-  });
+  }
+
+  // Event listener for tab activation changes
+  chrome.tabs.onActivated.addListener(changeTab);
 
   const updateTab = function(activeInfo) {
     getActiveTabTitle();
