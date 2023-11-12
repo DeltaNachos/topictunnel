@@ -31,8 +31,6 @@ function getActiveTabTitle() {
     });
   }
 
-  // start the timer when the button runs then remove that listener to prevent conflicts
-  chrome.runtime.onMessage.addListener(startTimer);
 
   const startTimer = (message, sender, sendResponse) => {
     if (message.message === 'startTimer' && working === false) {
@@ -45,8 +43,8 @@ function getActiveTabTitle() {
     }
   }
 
-  // Event listener for tab activation changes
-  chrome.tabs.onActivated.addListener(changeTab);
+  // start the timer when the button runs then remove that listener to prevent conflicts
+  chrome.runtime.onMessage.addListener(startTimer);
 
   const changeTab = function(activeInfo) {
     if (kill) {
@@ -56,9 +54,9 @@ function getActiveTabTitle() {
     getActiveTabTitle();
      // Retrieve the title whenever the active tab changes
   }
-
-  // Event listener for tab name changes
-  chrome.tabs.onUpdated.addListener(updateTab);
+  
+    // Event listener for tab activation changes
+    chrome.tabs.onActivated.addListener(changeTab);
 
   const updateTab = function(activeInfo) {
     if (kill) {
@@ -67,6 +65,9 @@ function getActiveTabTitle() {
     getActiveTabTitle();
     // Retrieve the title whenever a tab changes its name
   }
+
+  // Event listener for tab name changes
+  chrome.tabs.onUpdated.addListener(updateTab);
 
 // HTTP POST to cloud compute
 function fetcher() {
