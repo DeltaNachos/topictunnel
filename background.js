@@ -37,9 +37,10 @@ function getActiveTabTitle() {
           activeTabTitle = tab.title;
           if (activeTabTitle == lastTabTitle) {return;}
           lastTabTitle = activeTabTitle;
-          // fetcher();
-          console.log(activeTabTitle);
-          return activeTabTitle;
+          fetcher();
+          // console.log(activeTabTitle);
+          // console.log(topic);
+          // return activeTabTitle;
           // You can use activeTabTitle for your operations
         });
       }
@@ -82,6 +83,11 @@ function fetcher() {
   })
     .then(output => output.text())
     .then((output) => {
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.message == 'good?') {
+          sendResponse( { message : "NO" });
+        }
+      })
       console.log(output)
       console.log(activeTabTitle)
     })

@@ -5,5 +5,6 @@ start.addEventListener('click', () => {
   console.log(topic);
   chrome.runtime.sendMessage( { message: "startTimer", topic: topic }, (response) => {
     console.log(response.message);
-  } )
+  } );
+  start.setAttribute('disabled',true);
 })
