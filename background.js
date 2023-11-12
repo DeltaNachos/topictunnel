@@ -59,6 +59,7 @@ function getActiveTabTitle() {
       working = true;
       timeInterval = setInterval(tick, 1000);
       sendResponse( { message : 'timerStarted' } )
+      chrome.runtime.onMessage.removeListener(startTimer);
     }
   }
 
@@ -85,12 +86,13 @@ function fetcher() {
   })
     .then(output => output.text())
     .then((output) => {
-      chrome.runtime.onMessage.removeListener(startTimer);
+      //chrome.runtime.onMessage.removeListener(startTimer);
       chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log(message.message);
         if (message.message === 'good?') {
           sendResponse( { message: output } );
         }
+        console.log(output);
       })
       console.log(output)
       console.log(activeTabTitle)
