@@ -37,9 +37,9 @@ function getActiveTabTitle() {
           activeTabTitle = tab.title;
           if (activeTabTitle == lastTabTitle) {return;}
           lastTabTitle = activeTabTitle;
-          fetcher();
-          //console.log(activeTabTitle);
-          //return activeTabTitle;
+          // fetcher();
+          console.log(activeTabTitle);
+          return activeTabTitle;
           // You can use activeTabTitle for your operations
         });
       }
