@@ -39,6 +39,7 @@ function getActiveTabTitle() {
           lastTabTitle = activeTabTitle;
           fetcher();
           //console.log(activeTabTitle);
+          //console.log(topic);
           //return activeTabTitle;
           // You can use activeTabTitle for your operations
         });
@@ -70,10 +71,11 @@ function getActiveTabTitle() {
 
 // HTTP POST to cloud compute
 function fetcher() {
+  if (topic === undefined || topic === "" || activeTabTitle === undefined || activeTabTitle === "") {return;}
   fetch("https://us-central1-topictunnel.cloudfunctions.net/http-test", {
     method: "POST",
     body: JSON.stringify({
-      "prompt": "fortnite",
+      "prompt": topic,
       "text": activeTabTitle
     }),
     headers: {
