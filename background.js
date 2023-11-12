@@ -27,8 +27,10 @@ function tick() {
 // get tab title on change
 var activeTabTitle;
 var lastTabTitle;
+var gptTabTitle;
 var lastUrl;
 let gptResponse;
+var reloaded = false;
 
 // Function to get the title of the active tab
 function getActiveTabTitle() {
@@ -48,6 +50,9 @@ function getActiveTabTitle() {
     });
   }
 
+  // start the timer when the button runs then remove that listener to prevent conflicts
+  chrome.runtime.onMessage.addListener(startTimer);
+
   const startTimer = (message, sender, sendResponse) => {
     if (message.message === 'startTimer' && working === false) {
       topic = message.topic;
@@ -58,7 +63,8 @@ function getActiveTabTitle() {
     }
   }
 
-  chrome.runtime.onMessage.addListener(startTimer); // start the timer when the button runs then remove that listener to prevent conflicts
+  // Event listener for tab activation changes
+  chrome.tabs.onActivated.addListener(changeTab);
 
   const changeTab = function(activeInfo) {
     chrome.tabs.reload();
@@ -66,20 +72,20 @@ function getActiveTabTitle() {
      // Retrieve the title whenever the active tab changes
   }
 
-  // Event listener for tab activation changes
-  chrome.tabs.onActivated.addListener(changeTab);
+  // Event listener for tab name changes
+  chrome.tabs.onUpdated.addListener(updateTab);
 
   const updateTab = function(activeInfo) {
     getActiveTabTitle();
     // Retrieve the title whenever a tab changes its name
   }
 
-  // Event listener for tab name changes
-  chrome.tabs.onUpdated.addListener(updateTab);
-
 // HTTP POST to cloud compute
 function fetcher() {
   if (topic === undefined || topic === "" || activeTabTitle === undefined || activeTabTitle === "") {return;}
+  if (activeTabTitle === gptTabTitle) {return;}
+  gptTabTitle = activeTabTitle;
+  reloaded = false;
   fetch("https://us-central1-topictunnel.cloudfunctions.net/http-test", {
     method: "POST",
     body: JSON.stringify({
@@ -91,10 +97,11 @@ function fetcher() {
     }
   })
     .then(output => output.text())
-    .then((output) => {        
+    .then((output) => {
         gptResponse = output
         console.log(output)
         console.log(activeTabTitle)
+        if (output === 'upstream request timeout') fetcher();
       }
     )
     .catch(err => console.log(err))
@@ -104,13 +111,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message === "contentLoad") {
     fetcher();
     sendResponse({message: gptResponse});
-    // temp remove listener
-    chrome.runtime.onUpdated.removeListener(updateTab);
-    // reload
-    chrome.tabs.reload();
-    // re-add listener after 1 second
-    setTimeout(() => {
-      chrome.tabs.onUpdated.addListener(updateTab);
-    }, 1000);
+    if (reloaded === false) {
+      setTimeout(chrome.tabs.reload(), 2000)
+      reloaded = true;
+    }
   }
 });
