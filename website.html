@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopicTunnel</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+    <style>        html {
+            height: 100%
+        }
+        body {
+            padding-top: 56px;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            height: 100%;
+        }
+        .content {
+            margin: 20px;
+        }
+        .dark-mode {
+            background-color: #222;
+            color: #fff;
+        }
+        .navbar-dark .navbar-toggler-icon {
+            background-color: #fff;
+        }
+        #tiles {
+            max-height: 100%;
+            background-image: url('tt_ico48.png');
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+    <!-- Google Fonts - Poppins -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&amp;display=swap">
+</head>
+<body class="dark-mode" data-new-gr-c-s-check-loaded="14.1045.0" data-gr-ext-installed="">
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="logo-image">
+        <img src="tt_ico48.png" class="img-fluid">
+      </div>
+    <a class="navbar-brand nav-link" data-topic="home" href="#">TopicTunnel</a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"></path>
+        </svg>
+    </button>
+    <div class="navbar-collapse collapse" id="navbarNav" style="">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="inspiration">Inspiration</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="what-it-does">What it does</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="how-we-built-it">How we built it</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="challenges">Challenges we ran into</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="accomplishments">Accomplishments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="what-we-learned">What we learned</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="whats-next">What's next for TopicTunnel</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-topic="built-with">Built With</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Content -->
+    <main class="d-flex flex-column h-100">
+<div class="content">
+    <div id="dynamic-content"><h1 class="mb-4 pt-4">Home</h1><p class="mb-4 pt-4">Stay Focused with Ease!
+TopicTunnel is a powerful browser extension designed to keep you on track during work or study sessions. Input your current topic, and let our advanced AI algorithms analyze your visited webpages. Receive gentle reminders if you stray off-topic, and enjoy breaks with the popular 'pomodoro timer' method. Embrace productivity and conquer distractions effortlessly.</p></div>
+</div>
+<div class="flex-grow-1" id="tiles"></div>
+    </main>
+
+<!-- Bootstrap and jQuery JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<!-- Custom JavaScript -->
+<script>
+    $(document).ready(function () {
+        // Handle navbar link clicks
+        $('.nav-link').click(function () {
+            var topic = $(this).data('topic');
+            generateContent(topic);
+        });
+        
+        // Initial content generation
+        generateContent('home');
+    });
+
+    // Function to generate content based on the selected topic
+    function generateContent(topic) {
+        // Content mapping based on topics
+        var contentMap = {
+            'home': "Stay Focused with Ease!\nTopicTunnel is a powerful browser extension designed to keep you on track during work or study sessions. Input your current topic, and let our advanced AI algorithms analyze your visited webpages. Receive gentle reminders if you stray off-topic, and enjoy breaks with the popular 'pomodoro timer' method. Embrace productivity and conquer distractions effortlessly.",
+            'inspiration': "During a brainstorming session at Qdoba, we faced distraction and decided on an innovative solution - a browser extension. This extension helps users stay focused by blocking irrelevant sites while working on a specific topic.",
+            'what-it-does': "Our extension lets users input their working topic. Using advanced AI algorithms, it processes visited webpages, determining if the user is staying on topic. If they visit an 'off-topic' page, they receive a gentle reminder. After a period, users are rewarded with free time, following the 'pomodoro timer' method.",
+            'how-we-built-it': "Utilizing the powerful Google Chrome API, our extension fetches relevant data from user-visited websites. The Bootstrap front-end sends text via an HTTP request to a Google Cloud Function, which contains Python code utilizing the OpenAI API. The HTTP response contains a binary identifier indicating on/off-topic. The front-end then blocks out irrelevant sites, ensuring users return to their main task.",
+            'challenges': "Initially, setting up a Chrome extension posed challenges due to our lack of prior experience. Later, coding issues surfaced regarding persisting time data across tabs with low performance overhead. Additionally, finding an LLM model for accurate and quick website topic identification posed difficulties, exacerbated by an OpenAI outage.",
+            'accomplishments': "We take pride in efficiently handling tab event updates and processing topics, seamlessly integrating into our systems.",
+            'what-we-learned': "Web development can take many paths, and sometimes the first 'easiest' path is not the easiest.",
+            'whats-next': "Making the blocking animation smoother. Becoming a startup and bought out for 1 million dollars.",
+            'built-with': "AI, Bootstrap, CSS3, HTML5, JavaScript, Python, Chrome API"
+        };
+        $('#dynamic-content').html('<h1 class="mb-4 pt-4">' + topic.charAt(0).toUpperCase() + topic.slice(1).replace(/-/g, ' ') + '</h1><p class="mb-4 pt-4">' + contentMap[topic] + '</p>');
+    }
+</script>
+</html>
